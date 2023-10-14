@@ -1,0 +1,36 @@
+.setting {
+    position: absolute;
+    right: 0;
+    top: 0;
+    
+    width: 20rem;
+    color: white;
+    background-color: rgba(64, 64, 64, .5);
+    padding: 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Courier New', Courier, monospace;
+}
+.setting-item {
+    margin: .5rem 1rem;
+}
+.setting-item > label {
+    margin-right: .1rem;
+}
+.setting-item > label::after {
+    content: ':'
+}
+.setting-item > input {
+    width: 4rem;
+    background-color: #4C4C4C;
+    color: white;
+    margin-right: .5rem;
+}
+.setting-item > .note {
+    margin-top: .3rem;
+    color: #A2A2A2;
+}
+#submit {
+    margin: .5rem 0;
+    padding: .2rem 0;
+}
