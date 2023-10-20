@@ -13,7 +13,6 @@ function App() {
       <StageRenderer
         type={type()}
         equation={equation()}
-        test={(a: number, b: number) => a + b}
       />
       <EquationSetting
         type={type()}

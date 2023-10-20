@@ -45,7 +45,6 @@ const assignOrbitControl = (
 type StageProps = {
   type: string,
   equation: ((t: number) => any) | undefined
-  test: (a: number, b: number) => number
 }
 
 const Stage: Component<StageProps> = (props) => {
