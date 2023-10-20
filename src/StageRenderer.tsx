@@ -1,7 +1,7 @@
 import { Component, createEffect, onMount } from 'solid-js'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import createStageSetup from './stage'
+import createStageSetup from './stages'
 
 import './StageRenderer.css'
 
