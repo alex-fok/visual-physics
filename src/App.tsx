@@ -3,10 +3,10 @@ import StageRenderer from './StageRenderer'
 import EquationSetting from './EquationSetting'
 import './App.css'
 
-import type { EquationName } from '@/types/equations'
+import type { EquationName, Equation } from '@/types/equations'
 
 function App() {
-  const [equation, setEquation] = createSignal<(t: number) => any>()
+  const [equation, setEquation] = createSignal<Equation>()
   const [type, setType] = createSignal<EquationName>('displacement')
   return (
     <>

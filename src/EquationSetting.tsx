@@ -12,7 +12,7 @@ const findEquation: Record<EquationName, EqSetting> = {
 export type EquationProps = {
     type: EquationName,
     setType: Setter<EquationName>,
-    setEquation: Setter<any>
+    setEquation: Setter<Equation | undefined>
 }
 
 const EquationSetting: Component<EquationProps> = (props) => {
