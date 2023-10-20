@@ -1,13 +1,7 @@
 import { Component, For, Setter, Show, onMount } from 'solid-js'
 import './EquationSetting.css'
-import displacementSetting from '../settings/displacement'
-import { EquationName, Equation, Value } from '@/types/equations'
-
-type EqSetting = () => [Value[], Equation]
-
-const findEquation: Record<EquationName, EqSetting> = {
-  'displacement': displacementSetting
-}
+import equationList from '@/settings'
+import { EquationName, Equation } from '@/types/equations'
 
 export type EquationProps = {
   type: EquationName,
@@ -17,7 +11,7 @@ export type EquationProps = {
 
 const EquationSetting: Component<EquationProps> = (props) => {
   let submitRef : HTMLButtonElement | undefined
-  const [values, getEquation] = findEquation[props.type]()
+  const [values, getEquation] = equationList[props.type]()
 
   onMount(() => {
     submitRef?.addEventListener('click', () => {
