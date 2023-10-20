@@ -37,9 +37,9 @@ export default ():[Value[], () => DisplacementEq] => {
     const z_acc_num = z_acc();
 
     return (t: number) => ({
-        x: x0_num + x_v0_num * t + .5 * x_acc_num * t ** 2,
-        y: Math.max(0, y0_num + y_v0_num * t + .5 * y_acc_num * t ** 2),
-        z: z0_num + z_v0_num * t + .5 * z_acc_num * t ** 2
+      x: x0_num + x_v0_num * t + .5 * x_acc_num * t ** 2,
+      y: Math.max(0, y0_num + y_v0_num * t + .5 * y_acc_num * t ** 2),
+      z: z0_num + z_v0_num * t + .5 * z_acc_num * t ** 2
     })
   }
   return [values, equation]

@@ -1,6 +1,6 @@
 import { Component, For, Setter, Show, onMount } from 'solid-js'
 import './EquationSetting.css'
-import displacementSetting from './settings/displacement'
+import displacementSetting from '../settings/displacement'
 import { EquationName, Equation, Value } from '@/types/equations'
 
 type EqSetting = () => [Value[], Equation]
@@ -10,9 +10,9 @@ const findEquation: Record<EquationName, EqSetting> = {
 }
 
 export type EquationProps = {
-    type: EquationName,
-    setType: Setter<EquationName>,
-    setEquation: Setter<Equation | undefined>
+  type: EquationName,
+  setType: Setter<EquationName>,
+  setEquation: Setter<Equation | undefined>
 }
 
 const EquationSetting: Component<EquationProps> = (props) => {
