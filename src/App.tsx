@@ -3,9 +3,11 @@ import StageRenderer from './StageRenderer'
 import EquationSetting from './EquationSetting'
 import './App.css'
 
+import type { EquationName } from '@/types/equations'
+
 function App() {
   const [equation, setEquation] = createSignal<(t: number) => any>()
-  const [type, setType] = createSignal('displacement')
+  const [type, setType] = createSignal<EquationName>('displacement')
   return (
     <>
       <StageRenderer

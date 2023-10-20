@@ -1,12 +1,5 @@
 import * as THREE from 'three'
-
-type Equation = (
-  t: number
-) => ({
-  x: number,
-  y: number,
-  z: number
-})
+import type { DisplacementEq } from '@/types/equations'
 
 let camera: THREE.PerspectiveCamera
 let scene: THREE.Scene
@@ -42,11 +35,11 @@ export function init(): [THREE.Scene, THREE.PerspectiveCamera] {
 
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
-  equation: Equation
+  equation: DisplacementEq
 ) => {
   const clock = new THREE.Clock()
   const moveObj = (
-    equation: Equation,
+    equation: DisplacementEq,
     t: number
   ) => {
     if (t > 10) return
