@@ -18,13 +18,13 @@ export default ():[Value[], () => DisplacementEq] => {
   const values:Value[] = [
     {id: 'x0', name: 'x₀', unit: 'm', var: x0, setter: set_x0, note: ''},
     {id: 'x_v0', name: 'x_v₀', unit: 'm/s', var: x_v0, setter: set_x_v0, note: ''},
-    {id: 'x_acc', name: 'x_acceleration', unit: 'm²/s', var: x_acc, setter: set_x_acc, note: ''},
+    {id: 'x_acc', name: 'x_acceleration', unit: 'm/s²', var: x_acc, setter: set_x_acc, note: ''},
     {id: 'y0', name: 'y₀', unit: 'm', var: y0, setter: set_y0, note: ''},
     {id: 'y_v0', name: 'y_v₀', unit: 'm/s', var: y_v0, setter: set_y_v0, note:''},
-    {id: 'y_acc', name: 'y_acceleration', unit: 'm²/s', var: y_acc, setter: set_y_acc, note: '*Gravity = -9.8m²/s'},
+    {id: 'y_acc', name: 'y_acceleration', unit: 'm/s²', var: y_acc, setter: set_y_acc, note: '*Gravity = -9.8m/s²'},
     {id: 'z0', name: 'z₀', unit: 'm', var: z0, setter: set_z0, note: ''},
     {id: 'z_v0', name: 'z_v₀', unit: 'm/s', var: z_v0, setter: set_z_v0, note: ''},
-    {id: 'z_acc', name: 'z_acceleration', unit: 'm²/s', var: z_acc, setter: set_z_acc, note: ''} 
+    {id: 'z_acc', name: 'z_acceleration', unit: 'm/s²', var: z_acc, setter: set_z_acc, note: ''} 
   ]
   const equation = () => {
     const x0_num = x0()
