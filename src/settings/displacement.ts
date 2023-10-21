@@ -1,5 +1,6 @@
 import { createSignal } from 'solid-js'
-import { DisplacementEq, Value } from '../types/equations'
+
+import type { DisplacementEq, Value } from '@/types/equations'
 
 export default ():[Value[], () => DisplacementEq] => {
   const [x0, set_x0] = createSignal(0)

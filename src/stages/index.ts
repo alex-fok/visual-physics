@@ -1,8 +1,10 @@
 
 import { createEffect, createSignal, Setter } from 'solid-js'
 import { createStore } from 'solid-js/store'
+
 import * as displacement from './displacement'
-import { EquationName } from '@/types/equations'
+
+import type { EquationName } from '@/types/equations'
 
 type StageSetup = () => [
   scene: THREE.Scene,

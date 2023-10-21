@@ -1,7 +1,9 @@
 import { Component, For, Setter, Show, onMount } from 'solid-js'
+
 import './EquationSetting.css'
 import equationList from '@/settings'
-import { EquationName, Equation } from '@/types/equations'
+
+import type { EquationName, Equation } from '@/types/equations'
 
 export type EquationProps = {
   type: EquationName,

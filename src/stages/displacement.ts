@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+
 import type { DisplacementEq } from '@/types/equations'
 
 let camera: THREE.PerspectiveCamera
