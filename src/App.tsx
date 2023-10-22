@@ -1,6 +1,5 @@
 import { createSignal } from 'solid-js'
 
-import './StageRenderer.css'
 import StageRenderer from '@/components/StageRenderer'
 import EquationSetting from '@/components/EquationSetting'
 

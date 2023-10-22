@@ -1,6 +1,6 @@
 import { Accessor, Setter } from 'solid-js'
 
-export type EquationName = 'displacement'
+export type EquationName = 'amplitude' | 'displacement'
 
 export type Equation = (t:number) => any
 
@@ -13,3 +13,4 @@ export type Value = {
     note: string
 }
 export type DisplacementEq = (t:number) => {x: number, y:number, z:number}
+export type AmplitudeEq = (t:number) => {y: number}

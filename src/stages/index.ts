@@ -2,11 +2,12 @@
 import { createEffect, createSignal, Setter } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import * as amplitude from './amplitude'
 import * as displacement from './displacement'
 
 import type { EquationName } from '@/types/equations'
 
-type StageSetup = () => [
+type StageSetup = (renderer: THREE.WebGLRenderer) => [
   scene: THREE.Scene,
   camera: THREE.PerspectiveCamera
 ]
@@ -26,6 +27,11 @@ const stages : Record<EquationName, Stage> = {
     init: displacement.init,
     start: displacement.startAnimation,
     stop: displacement.stopAnimation
+  },
+  'amplitude': {
+    init: amplitude.init,
+    start: amplitude.startAnimation,
+    stop: amplitude.stopAnimation
   }
 }
 

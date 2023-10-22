@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { DisplacementEq } from '@/types/equations'
 
 let camera: THREE.PerspectiveCamera
@@ -8,9 +9,28 @@ let scene: THREE.Scene
 let sphere: THREE.Mesh
 let plane: THREE.Mesh
 
+let orbitId: number
 let animationId: number
 
-export function init(): [THREE.Scene, THREE.PerspectiveCamera] {
+const assignOrbitControl = (
+  r: THREE.WebGLRenderer,
+  s: THREE.Scene,
+  c: THREE.PerspectiveCamera,
+  o: OrbitControls
+) => {
+  if (orbitId)
+    cancelAnimationFrame(orbitId)
+  
+  const enableOrbitControl = () => {
+    orbitId = requestAnimationFrame(() => enableOrbitControl())
+    
+    o.update()
+    r.render(s, c)
+  }
+  enableOrbitControl()
+}
+
+export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera] {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
 
@@ -31,6 +51,9 @@ export function init(): [THREE.Scene, THREE.PerspectiveCamera] {
 
   camera.position.setY(75)
   camera.position.setZ(100)
+
+  assignOrbitControl(renderer, scene, camera, new OrbitControls(camera, renderer.domElement))
+  
   return [scene, camera]
 }
 

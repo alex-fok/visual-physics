@@ -1,6 +1,5 @@
 import { Component, createEffect, onMount } from 'solid-js'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 import './StageRenderer.css'
 import createStageSetup from '@/stages'
@@ -10,38 +9,16 @@ import type { Equation, EquationName } from '@/types/equations'
 const getWindowWidth = () => window.innerWidth - 1
 const getWindowHeight = () => window.innerHeight
 
-
-let renderer: THREE.WebGLRenderer | undefined
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 
-let currOrbit: number
-
-const onWindowResize = () => {
+const onWindowResize = (renderer: THREE.WebGLRenderer) => {
   const [ width, height ] = [getWindowWidth(), getWindowHeight()]
   camera.aspect = width / height
   camera.updateProjectionMatrix()
 
-  renderer?.setSize(width, Math.floor(height))
-  renderer?.render(scene, camera)
-}
-
-const assignOrbitControl = (
-  renderer: THREE.WebGLRenderer,
-  s: THREE.Scene,
-  c: THREE.PerspectiveCamera,
-  o: OrbitControls
-) => {
-  if (currOrbit)
-    cancelAnimationFrame(currOrbit)
-  
-  const enableOrbitControl = () => {
-    currOrbit = requestAnimationFrame(() => enableOrbitControl())
-    
-    o.update()
-    renderer.render(s, c)
-  }
-  enableOrbitControl()
+  renderer.setSize(width, Math.floor(height))
+  renderer.render(scene, camera)
 }
 
 type StageProps = {
@@ -54,35 +31,32 @@ const Stage: Component<StageProps> = (props) => {
   
   const [currStage, setStageType] = createStageSetup(props.type)
   
-  const setCameraAndScene = () => {
-    const [s, c] = currStage.init()
+  const setCameraAndScene = (renderer: THREE.WebGLRenderer) => {
+    const [s, c] = currStage.init(renderer)
     c.aspect = getWindowWidth() / getWindowHeight()
     c.updateProjectionMatrix()
     
     scene = s
     camera = c
-
-    if (renderer)
-      assignOrbitControl(renderer, s, c, new OrbitControls(c, renderer.domElement))
   }
 
   onMount(() => {
-    renderer = new THREE.WebGLRenderer({canvas: canvasRef})
+    const renderer = new THREE.WebGLRenderer({canvas: canvasRef})
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(getWindowWidth(), getWindowHeight())
-    setCameraAndScene()
+    setCameraAndScene(renderer)
     
-    window.addEventListener('resize', onWindowResize)
+    window.addEventListener('resize', () => { onWindowResize(renderer) })
 
     // Effect: Type
     createEffect(() => {
       currStage.stop()
       setStageType(props.type)
-      setCameraAndScene()
+      setCameraAndScene(renderer)
     })
     // Effect: Equation
     createEffect(() => {
-      if (renderer && props.equation) {
+      if (props.equation) {
         currStage.stop()
         currStage.start(renderer, props.equation)
       }
