@@ -2,7 +2,7 @@ import { createSignal } from 'solid-js'
 
 import type { DisplacementEq, Value } from '@/types/equations'
 
-export default ():[Value[], () => DisplacementEq] => {
+export default ():{values: Value[], equation: () => DisplacementEq} => {
   const [x0, set_x0] = createSignal(0)
   const [y0, set_y0] = createSignal(0)
   const [z0, set_z0] = createSignal(0)
@@ -43,5 +43,5 @@ export default ():[Value[], () => DisplacementEq] => {
       z: z0_num + z_v0_num * t + .5 * z_acc_num * t ** 2
     })
   }
-  return [values, equation]
+  return {values, equation}
 }

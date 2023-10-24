@@ -1,19 +1,20 @@
-import { Component, createEffect, onMount } from 'solid-js'
+import { Component, createEffect, createMemo, onMount } from 'solid-js'
 import * as THREE from 'three'
+import dimensions from '@/utils/dimensions'
 
 import './StageRenderer.css'
-import createStageSetup from '@/stages'
 
+import createStageActions from '@/stages'
+
+import type { StageActions } from '@/types/stages'
 import type { Equation, EquationName } from '@/types/equations'
 
-const getWindowWidth = () => window.innerWidth - 1
-const getWindowHeight = () => window.innerHeight
-
+let renderer: THREE.WebGLRenderer
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 
 const onWindowResize = (renderer: THREE.WebGLRenderer) => {
-  const [ width, height ] = [getWindowWidth(), getWindowHeight()]
+  const { width, height } = dimensions()
   camera.aspect = width / height
   camera.updateProjectionMatrix()
 
@@ -22,45 +23,43 @@ const onWindowResize = (renderer: THREE.WebGLRenderer) => {
 }
 
 type StageProps = {
-  type: EquationName,
+  eqName: EquationName,
   equation: Equation | undefined
 }
 
 const Stage: Component<StageProps> = (props) => {
   let canvasRef: HTMLCanvasElement | undefined
-  
-  const [currStage, setStageType] = createStageSetup(props.type)
-  
-  const setCameraAndScene = (renderer: THREE.WebGLRenderer) => {
-    const [s, c] = currStage.init(renderer)
-    c.aspect = getWindowWidth() / getWindowHeight()
+  const actions = createMemo<StageActions>(prev => {
+    prev?.stop()
+    return createStageActions(props.eqName)
+  })
+
+  const setCameraAndScene = (s: THREE.Scene, c: THREE.PerspectiveCamera, control: () => void) => {
+    const {width, height} = dimensions()
+    c.aspect = width / height
     c.updateProjectionMatrix()
-    
     scene = s
     camera = c
+    control()
   }
 
-  onMount(() => {
-    const renderer = new THREE.WebGLRenderer({canvas: canvasRef})
-    renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(getWindowWidth(), getWindowHeight())
-    setCameraAndScene(renderer)
-    
-    window.addEventListener('resize', () => { onWindowResize(renderer) })
-
+  onMount(() => { 
+    const r = new THREE.WebGLRenderer({canvas: canvasRef})
+    r.setPixelRatio(window.devicePixelRatio)
+    const { width, height } = dimensions()
+    r.setSize(width, height)
+    renderer = r
+    renderer.autoClear = true;
     // Effect: Type
     createEffect(() => {
-      currStage.stop()
-      setStageType(props.type)
-      setCameraAndScene(renderer)
+      window.addEventListener('resize', () => { onWindowResize(r) })
+      setCameraAndScene(...actions().init(renderer))
     })
-    // Effect: Equation
-    createEffect(() => {
-      if (props.equation) {
-        currStage.stop()
-        currStage.start(renderer, props.equation)
-      }
-    })
+  })
+
+  createEffect(() => {
+    if (props.equation)
+      actions().start(renderer, props.equation)
   })
   return (
     <div class='render-space'>

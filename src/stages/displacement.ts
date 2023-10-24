@@ -10,7 +10,7 @@ let sphere: THREE.Mesh
 let plane: THREE.Mesh
 
 let orbitId: number
-let animationId: number
+let equationId: number
 
 const assignOrbitControl = (
   r: THREE.WebGLRenderer,
@@ -18,19 +18,19 @@ const assignOrbitControl = (
   c: THREE.PerspectiveCamera,
   o: OrbitControls
 ) => {
-  if (orbitId)
+  if (orbitId) {
     cancelAnimationFrame(orbitId)
-  
+    orbitId = 0
+  }
   const enableOrbitControl = () => {
     orbitId = requestAnimationFrame(() => enableOrbitControl())
-    
     o.update()
     r.render(s, c)
   }
-  enableOrbitControl()
+  return enableOrbitControl
 }
 
-export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera] {
+export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
 
@@ -52,9 +52,9 @@ export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
   camera.position.setY(75)
   camera.position.setZ(100)
 
-  assignOrbitControl(renderer, scene, camera, new OrbitControls(camera, renderer.domElement))
+  const control = assignOrbitControl(renderer, scene, camera, new OrbitControls(camera, renderer.domElement))
   
-  return [scene, camera]
+  return [scene, camera, control]
 }
 
 export const startAnimation = (
@@ -75,7 +75,7 @@ export const startAnimation = (
     renderer.render(scene, camera)
     if (y === 0) return
 
-    animationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
+    equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
   }
   // Start Animation  
   clock.start()
@@ -83,6 +83,12 @@ export const startAnimation = (
 }
 
 export const stopAnimation = () => {
-  if (animationId)
-    cancelAnimationFrame(animationId)
+  if (orbitId) {
+    cancelAnimationFrame(orbitId)
+    orbitId = 0
+  }
+  if (equationId) {
+    cancelAnimationFrame(equationId)
+    equationId = 0
+  }
 }

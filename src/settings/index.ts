@@ -1,11 +1,9 @@
 import amplitude from './amplitude'
 import displacement from './displacement'
 
-import type { Equation, EquationName, Value } from '@/types/equations'
+import type { EquationName, EquationVar } from '@/types/equations'
 
-type EqSetting = () => [Value[], Equation]
-
-const equationList: Record<EquationName, EqSetting> = {
+const equationList: Record<EquationName, () => EquationVar> = {
     'amplitude': amplitude,
     'displacement': displacement
 }

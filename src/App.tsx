@@ -3,20 +3,20 @@ import { createSignal } from 'solid-js'
 import StageRenderer from '@/components/StageRenderer'
 import EquationSetting from '@/components/EquationSetting'
 
-import type { EquationName, Equation } from '@/types/equations'
+import type { Equation, EquationName } from '@/types/equations'
 
 function App() {
   const [equation, setEquation] = createSignal<Equation>()
-  const [type, setType] = createSignal<EquationName>('displacement')
+  const [eqName, setEqName] = createSignal<EquationName>('amplitude')
   return (
     <>
       <StageRenderer
-        type={type()}
+        eqName={eqName()}
         equation={equation()}
       />
       <EquationSetting
-        type={type()}
-        setType={setType}
+        eqName={eqName()}
+        setEqName={setEqName}
         setEquation={setEquation}
       />
     </>

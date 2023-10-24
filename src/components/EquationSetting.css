@@ -30,6 +30,11 @@
     margin-top: .3rem;
     color: #A2A2A2;
 }
+
+.select-eq {
+    margin: 0rem 1rem;
+}
+
 #submit {
     margin: .5rem 0;
     padding: .2rem 0;

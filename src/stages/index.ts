@@ -1,28 +1,10 @@
-
-import { createEffect, createSignal, Setter } from 'solid-js'
-import { createStore } from 'solid-js/store'
-
 import * as amplitude from './amplitude'
 import * as displacement from './displacement'
 
 import type { EquationName } from '@/types/equations'
+import type { StageActions } from '@/types/stages'
 
-type StageSetup = (renderer: THREE.WebGLRenderer) => [
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera
-]
-
-type StartAnimation = (renderer: THREE.WebGLRenderer, equation: any) => void
-
-type StopAnimation = () => void
-
-type Stage = {
-  init: StageSetup,
-  start: StartAnimation,
-  stop: StopAnimation
-}
-
-const stages : Record<EquationName, Stage> = {
+const stages: Record<EquationName, StageActions> = {
   'displacement': {
     init: displacement.init,
     start: displacement.startAnimation,
@@ -35,13 +17,6 @@ const stages : Record<EquationName, Stage> = {
   }
 }
 
-export default (
-  type: EquationName 
-): [Stage, Setter<EquationName>] => {
-  const [stageType, setStageType] = createSignal<EquationName>(type)
-  const [stage, setStageInit] = createStore<Stage>(stages[type])
-
-  createEffect(() => { setStageInit(stages[stageType()]) })
-  
-  return [stage, setStageType]
+export default (type: EquationName): StageActions => {
+  return stages[type]
 }
