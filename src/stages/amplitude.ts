@@ -5,6 +5,18 @@ let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 
 let sphere: THREE.Mesh
+let line: THREE.Line
+
+// From CG bookcase: https://www.cgbookcase.com/textures/granite-01-small
+const texture = new THREE.TextureLoader().load('/assets/textures/marble/BaseColor.png')
+const normal = new THREE.TextureLoader().load('/assets/textures/marble/Normal.png')
+const roughness = new THREE.TextureLoader().load('/assets/textures/marble/Roughness.png')
+// const textureHeight = new THREE.TextureLoader().load('/assets/textures/marble/Height.png')
+const ambient = new THREE.AmbientLight(0xffffff)
+
+const pointLight = new THREE.PointLight(0xAAAAAA, 100, 0, .5)
+const lightHelper = new THREE.PointLightHelper(pointLight)
+pointLight.position.set(-5, -35, 50)
 
 let rendererId: number
 let equationId: number
@@ -15,12 +27,27 @@ export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
 
   sphere = new THREE.Mesh(
     new THREE.SphereGeometry(10, 20, 20),
-    new THREE.MeshBasicMaterial({color: 0xFF4545})
+    new THREE.MeshStandardMaterial({
+      map: texture,
+      normalMap: normal,
+      roughnessMap: roughness,
+      // displacementMap: textureHeight
+    })
   )
-  scene.add(sphere)
+  sphere.position.y = -50
+  const lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff})
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, -50, 0)
+  ])
+  line = new THREE.Line(lineGeometry, lineMaterial)
+  
+  scene.add(pointLight, ambient)
+  scene.add(lightHelper)
+  scene.add(sphere, line)
 
-  camera.position.setY(0)
-  camera.position.setZ(200)
+  camera.position.setY(-20)
+  camera.position.setZ(100)
 
   const assignRendererAnimation = (
     r: THREE.WebGLRenderer,
@@ -51,9 +78,10 @@ export const startAnimation = (
     t: number
   ) => {
     if (t > 5) return
-    const {x, y} = equation(t)
-    sphere.position.x = x
-    sphere.position.y = y
+    const {linePoints, obj} = equation(t)
+    line.geometry = new THREE.BufferGeometry().setFromPoints(linePoints.map(p => new THREE.Vector3(...p)))
+    sphere.position.x = obj.x
+    sphere.position.y = obj.y
     renderer.render(scene, camera)
 
     equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))

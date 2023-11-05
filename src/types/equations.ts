@@ -17,6 +17,12 @@ export type Value = {
 }
 
 export type DisplacementEq = (t:number) => {x: number, y:number, z:number}
-export type AmplitudeEq = (t:number) => {x: number, y: number}
+export type AmplitudeEq = (t:number) => {
+    linePoints: number[][],
+    obj: {
+        x: number,
+        y: number
+    }
+}
 
 export type EquationVar = {values: Value[], equation: Equation}

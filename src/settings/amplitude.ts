@@ -17,10 +17,14 @@ export default ():{ values: Value[], equation: () => AmplitudeEq } => {
     const angularFrequency_num = angularFrequency()
     const phase_num = phase()
     
-    return (t:number) => ({
-        x: amplitude_num * Math.sin(angularFrequency_num * t + phase_num),
-        y: (10 ** 2 - amplitude_num * Math.sin(angularFrequency_num * t + phase_num)) ** .5
-    })
+    return (t:number) => {
+      const x =  amplitude_num * Math.sin(angularFrequency_num * t + phase_num)
+      const y = (50 ** 2 - (amplitude_num * Math.sin(angularFrequency_num * t + phase_num)) ** 2) ** .5 * -1
+      return {
+        linePoints: [[0, 0, 0], [x, y, 0]],
+        obj: { x, y }
+      }
+    }
   }
   return {values, equation}
 }
