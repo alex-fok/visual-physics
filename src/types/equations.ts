@@ -25,4 +25,4 @@ export type AmplitudeEq = (t:number) => {
     }
 }
 
-export type EquationVar = {values: Value[], equation: Equation}
+export type EquationVar = {equationString: string, values: Value[], equation: Equation}
