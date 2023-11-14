@@ -41,6 +41,7 @@ const EquationSetting: Component<EquationProps> = (props) => {
 
   return (
     <div class='setting'>
+      <div>{eqVals().equationString}</div>
       <label class='select-eq' for='equations'>Choose a equation:</label>
       <select
         class='select-eq'

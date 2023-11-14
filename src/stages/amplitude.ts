@@ -8,13 +8,16 @@ let sphere: THREE.Mesh
 let line: THREE.Line
 
 // From CG bookcase: https://www.cgbookcase.com/textures/granite-01-small
-const texture = new THREE.TextureLoader().load('/assets/textures/marble/BaseColor.png')
-const normal = new THREE.TextureLoader().load('/assets/textures/marble/Normal.png')
-const roughness = new THREE.TextureLoader().load('/assets/textures/marble/Roughness.png')
-// const textureHeight = new THREE.TextureLoader().load('/assets/textures/marble/Height.png')
-const ambient = new THREE.AmbientLight(0xffffff)
+const ao = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/AO.png')
+const baseColor = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/BaseColor.png')
+const height = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/Height.png')
+const metallic = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/Metallic.png')
+const normal = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/Normal.png')
+const roughness = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/Roughness.png')
 
-const pointLight = new THREE.PointLight(0xAAAAAA, 100, 0, .5)
+// const ambient = new THREE.AmbientLight(0xffffff)
+
+const pointLight = new THREE.PointLight(0xFFFFFF, 100, 0, .8)
 const lightHelper = new THREE.PointLightHelper(pointLight)
 pointLight.position.set(-5, -35, 50)
 
@@ -26,12 +29,14 @@ export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
   scene = new THREE.Scene()
 
   sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(10, 20, 20),
+    new THREE.SphereGeometry(12, 50, 50),
     new THREE.MeshStandardMaterial({
-      map: texture,
+      aoMap: ao,
+      map: baseColor,
+      displacementMap: height,
+      metalnessMap: metallic,
       normalMap: normal,
-      roughnessMap: roughness,
-      // displacementMap: textureHeight
+      roughnessMap: roughness
     })
   )
   sphere.position.y = -50
@@ -42,7 +47,7 @@ export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
   ])
   line = new THREE.Line(lineGeometry, lineMaterial)
   
-  scene.add(pointLight, ambient)
+  scene.add(pointLight)
   scene.add(lightHelper)
   scene.add(sphere, line)
 
