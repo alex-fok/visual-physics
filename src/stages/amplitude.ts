@@ -21,10 +21,10 @@ const pointLight = new THREE.PointLight(0xFFFFFF, 100, 0, .8)
 const lightHelper = new THREE.PointLightHelper(pointLight)
 pointLight.position.set(-5, -35, 50)
 
-let rendererId: number
-let equationId: number
+let rendererId = 0;
+let equationId = 0;
 
-export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] {
+export const init = (renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
 
@@ -59,7 +59,6 @@ export function init(renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
     s: THREE.Scene,
     c: THREE.PerspectiveCamera,
   ) => {
-    
     const animation = () => {
       rendererId = requestAnimationFrame(() => animation())
       r.render(s, c)
@@ -104,5 +103,5 @@ export const stopAnimation = () => {
   if (equationId) {
     cancelAnimationFrame(equationId)
     equationId = 0
-  } 
+  }
 }
