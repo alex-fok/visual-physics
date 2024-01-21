@@ -26,12 +26,11 @@ const EquationSetting: Component<EquationProps> = (props) => {
 
   const setSelectedEquation = (selection: string) => {
     const eqName = EqNames.find(name => name === selection)
-    if (eqName !== undefined)
-    {
-      props.setEquation(undefined)
-      props.setEqName(eqName)
-      setEqSetting(equationList[props.eqName]())
-    }
+    if (eqName === undefined) return;
+
+    props.setEquation(undefined)
+    props.setEqName(eqName)
+    setEqSetting(equationList[props.eqName]())    
   } 
 
   const setValue = (event: Event, setter: Setter<number>) => {
@@ -53,6 +52,7 @@ const EquationSetting: Component<EquationProps> = (props) => {
       >
         <option selected={props.eqName == 'displacement'} value='displacement'>Displacement</option>
         <option selected={props.eqName == 'amplitude'} value='amplitude'>Amplitude</option>
+        <option selected={props.eqName == 'elasticCollision'} value='elasticCollision'>Elastic Collision</option>
       </select>
       <For each={eqVals().values}>{ (value) => 
         <div class='setting-item'>
