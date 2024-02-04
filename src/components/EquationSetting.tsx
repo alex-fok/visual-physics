@@ -20,7 +20,15 @@ const EquationSetting: Component<EquationProps> = (props) => {
 
   onMount(() => {
     submitRef?.addEventListener('click', () => {
-      props.setEquation(eqVals().equation)
+      const invalidValues = [];
+      for (const value of eqVals().values)
+        if (
+          (value.max !== undefined && value.var() > value.max) ||
+          (value.min !== undefined && value.var() < value.min)
+        )
+          invalidValues.push(value.name);
+      
+      invalidValues.length ? alert(`Invalid Values: ${invalidValues.join(", ")}`) : props.setEquation(eqVals().equation)
     })
   })
 
@@ -62,6 +70,9 @@ const EquationSetting: Component<EquationProps> = (props) => {
             type='number'
             value={value.var()}
             onInput={event => setValue(event, value.setter)}
+            min={value.min !== undefined ? value.min : Number.NEGATIVE_INFINITY}
+            max={value.max !== undefined ? value.max : Number.POSITIVE_INFINITY}
+            step={value.step !== undefined ? value.step : .1}
           />
           <span>{value.unit}</span>
           <Show when={value.note !== ''}>

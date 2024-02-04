@@ -6,20 +6,20 @@ import type { ElasticCollisionEq, Value } from '@/types/equations'
 const [w1, w2] = [1, 1]
 const [x1, x2] = [-2.5, 2.5]
 export default ():{ equationString:string, values: Value[], equation: () => ElasticCollisionEq } => {
-  const [m1, setM1] = createSignal<number>(0)
-  const [v1, setV1] = createSignal<number>(0)
+  const [m1, setM1] = createSignal<number>(2)
+  const [v1, setV1] = createSignal<number>(1)
   // const [x1, setX1] = createSignal<number>(-2.5)
-  const [m2, setM2] = createSignal<number>(0)
-  const [v2, setV2] = createSignal<number>(0)
+  const [m2, setM2] = createSignal<number>(1)
+  const [v2, setV2] = createSignal<number>(-2)
   // const [x2, setX2] = createSignal<number>(2.5)
   
   const equationString = 'm₁v₁ + m₂v₂ = m₁v₁\' + m₂v₂\''
 
   const values = [
-    {id: 'm1', name:'m₁', unit: 'kg', var: m1, setter: setM1, note:''},
+    {id: 'm1', name:'m₁', unit: 'kg', var: m1, setter: setM1, note:'', min: 0},
     {id: 'v1', name: 'v₁', unit: 'm/s', var: v1, setter: setV1, note: ''},
     // {id: 'x1', name: 'x₁', unit: 'm', var: x1, setter: setX1, note: 'Object 1 Starting Position'},
-    {id: 'm2', name: 'm₂', unit: 'kg', var: m2, setter: setM2, note: ''},
+    {id: 'm2', name: 'm₂', unit: 'kg', var: m2, setter: setM2, note: '', min: 0},
     {id: 'v2', name: 'v₂', unit: 'm/s', var: v2, setter: setV2, note: ''},
     // {id: 'x2', name: 'x₂', unit: 'm', var: x2, setter: setX2, note: 'Object 2 Starting Position'}
   ]

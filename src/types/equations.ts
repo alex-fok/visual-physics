@@ -14,6 +14,9 @@ export type Value = {
     var: Accessor<number>,
     setter: Setter<number>,
     note: string
+    min?: number,
+    max?: number,
+    step?: number
 }
 
 export type DisplacementEq = (t:number) => {
