@@ -1,7 +1,7 @@
 import { Accessor, Setter } from 'solid-js'
 
 /* Needed for satisfying type check. Used along with Array.find to convert variables from string to EquationName */
-export const EqNames = ['amplitude', 'displacement', 'elasticCollision'] as const
+export const EqNames = ['amplitude', 'displacement', 'elasticCollision', 'inelasticCollision'] as const
 
 export type EquationName = typeof EqNames[number]
 
@@ -34,6 +34,11 @@ export type AmplitudeEq = (t:number) => {
 }
 
 export type ElasticCollisionEq = (t:number) => {
+    x1: number,
+    x2: number
+}
+
+export type InelasticCollisionEq = (t:number) => {
     x1: number,
     x2: number
 }

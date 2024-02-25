@@ -61,6 +61,7 @@ const EquationSetting: Component<EquationProps> = (props) => {
         <option selected={props.eqName == 'displacement'} value='displacement'>Displacement</option>
         <option selected={props.eqName == 'amplitude'} value='amplitude'>Amplitude</option>
         <option selected={props.eqName == 'elasticCollision'} value='elasticCollision'>Elastic Collision</option>
+        <option selected={props.eqName == 'inelasticCollision'} value='inelasticCollision'>Inelastic Collision</option>
       </select>
       <For each={eqVals().values}>{ (value) => 
         <div class='setting-item'>

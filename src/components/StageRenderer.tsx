@@ -1,5 +1,6 @@
 import { Component, createEffect, createMemo, onMount } from 'solid-js'
 import * as THREE from 'three'
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js'
 import dimensions from '@/utils/dimensions'
 
 import './StageRenderer.css'
@@ -10,16 +11,19 @@ import type { StageActions } from '@/types/stages'
 import type { Equation, EquationName } from '@/types/equations'
 
 let renderer: THREE.WebGLRenderer
+let labelRenderer: CSS2DRenderer
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 
-const onWindowResize = (renderer: THREE.WebGLRenderer) => {
+const onWindowResize = (renderer: THREE.WebGLRenderer, labelRenderer: CSS2DRenderer) => {
   const { width, height } = dimensions()
   camera.aspect = width / height
   camera.updateProjectionMatrix()
 
   renderer.setSize(width, Math.floor(height))
   renderer.render(scene, camera)
+  labelRenderer.setSize(width, Math.floor(height))
+  labelRenderer.render(scene, camera)
 }
 
 type StageProps = {
@@ -31,6 +35,7 @@ const Stage: Component<StageProps> = (props) => {
   let canvasRef: HTMLCanvasElement | undefined
   const actions = createMemo<StageActions>(prev => {
     prev?.stop()
+    prev?.clear?.()
     return createStageActions(props.eqName)
   })
 
@@ -43,26 +48,39 @@ const Stage: Component<StageProps> = (props) => {
     control()
   }
 
-  onMount(() => { 
+  onMount(() => {
     const r = new THREE.WebGLRenderer({canvas: canvasRef})
+    const l = new CSS2DRenderer();
+
+    document.getElementById('renderingSpace')?.appendChild(l.domElement)
     r.setPixelRatio(window.devicePixelRatio)
+    
     const { width, height } = dimensions()
+
     r.setSize(width, height)
+    l.setSize(width, height)
     renderer = r
-    renderer.autoClear = true;
+    renderer.autoClear = true
+    labelRenderer = l
+
+    l.domElement.style.position= 'absolute'
+    l.domElement.style.top = '0px'
+    l.domElement.style.pointerEvents = 'none'
+    l.setSize(width, height)
+    
     // Effect: Type
     createEffect(() => {
-      window.addEventListener('resize', () => { onWindowResize(r) })
-      setCameraAndScene(...actions().init(renderer))
+      window.addEventListener('resize', () => { onWindowResize(r, l) })
+      setCameraAndScene(...actions().init(renderer, labelRenderer))
     })
   })
 
   createEffect(() => {
     if (props.equation)
-      actions().start(renderer, props.equation)
+      actions().start(renderer, props.equation, labelRenderer)
   })
   return (
-    <div class='render-space'>
+    <div id='renderingSpace' class='render-space'>
       <canvas ref={canvasRef}></canvas>
     </div>
   )

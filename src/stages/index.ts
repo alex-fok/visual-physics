@@ -1,6 +1,7 @@
 import * as amplitude from './amplitude'
 import * as displacement from './displacement'
 import * as elasticCollision from './elasticCollision'
+import * as inelasticCollision from './inelasticCollision'
 
 import type { EquationName } from '@/types/equations'
 import type { StageActions } from '@/types/stages'
@@ -20,6 +21,12 @@ const stages: Record<EquationName, StageActions> = {
     init: elasticCollision.init,
     start: elasticCollision.startAnimation,
     stop: elasticCollision.stopAnimation
+  },
+  'inelasticCollision': {
+    init: inelasticCollision.init,
+    start: inelasticCollision.startAnimation,
+    stop: inelasticCollision.stopAnimation,
+    clear: inelasticCollision.cleanup
   }
 }
 
