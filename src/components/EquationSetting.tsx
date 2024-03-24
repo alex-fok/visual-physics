@@ -1,4 +1,4 @@
-import { Component, For, Setter, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { Component, For, Setter, Show, createSignal, onMount } from 'solid-js'
 
 import './EquationSetting.css'
 
@@ -11,14 +11,15 @@ export type EquationProps = {
   eqName: EquationName,
   setEqName: Setter<EquationName>,
   setEquation: Setter<Equation | undefined>
+  setIsPlayAnimation: (b: boolean) => void
 }
 
 const EquationSetting: Component<EquationProps> = (props) => {
   let submitRef : HTMLButtonElement | undefined
-  const [eqSetting, setEqSetting] = createSignal<EquationVar>(equationList[props.eqName]())
-  const eqVals = createMemo(eqSetting)
+  const [eqVals, setEqVals] = createSignal<EquationVar>(equationList[props.eqName]())
 
   onMount(() => {
+    props.setEquation(eqVals().equation)
     submitRef?.addEventListener('click', () => {
       const invalidValues = [];
       for (const value of eqVals().values)
@@ -28,7 +29,11 @@ const EquationSetting: Component<EquationProps> = (props) => {
         )
           invalidValues.push(value.name);
       
-      invalidValues.length ? alert(`Invalid Values: ${invalidValues.join(", ")}`) : props.setEquation(eqVals().equation)
+      if(invalidValues.length)
+        return alert(`Invalid Values: ${invalidValues.join(", ")}`)
+
+      props.setEquation(eqVals().equation)
+      props.setIsPlayAnimation(true)
     })
   })
 
@@ -36,9 +41,9 @@ const EquationSetting: Component<EquationProps> = (props) => {
     const eqName = EqNames.find(name => name === selection)
     if (eqName === undefined) return;
 
-    props.setEquation(undefined)
     props.setEqName(eqName)
-    setEqSetting(equationList[props.eqName]())    
+    setEqVals(equationList[props.eqName]())
+    props.setEquation(eqVals().equation)
   } 
 
   const setValue = (event: Event, setter: Setter<number>) => {
@@ -55,6 +60,7 @@ const EquationSetting: Component<EquationProps> = (props) => {
         id='equations'
         name='equations'
         onChange={event => {
+          props.setIsPlayAnimation(false)
           setSelectedEquation((event.target as HTMLSelectElement).value)
         }}
       >

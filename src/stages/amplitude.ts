@@ -7,6 +7,8 @@ let camera: THREE.PerspectiveCamera
 let sphere: THREE.Mesh
 let line: THREE.Line
 
+let setTime: (t: number) => void
+
 // From CG bookcase: https://www.cgbookcase.com/textures/granite-01-small
 const ao = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/AO.png')
 const baseColor = new THREE.TextureLoader().load(import.meta.env.BASE_URL + 'assets/textures/metal/BaseColor.png')
@@ -24,9 +26,10 @@ pointLight.position.set(-5, -35, 50)
 let rendererId = 0;
 let equationId = 0;
 
-export const init = (renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
+export const init = (renderer: THREE.WebGLRenderer, setT: (t: number) => void): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
+  setTime = setT 
 
   sphere = new THREE.Mesh(
     new THREE.SphereGeometry(12, 50, 50),
@@ -68,6 +71,13 @@ export const init = (renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
   return [scene, camera, assignRendererAnimation(renderer, scene, camera)]
 }
 
+const setItemPositions = (t: number, equation: AmplitudeEq) => {
+  const {linePoints, obj} = equation(t)
+  line.geometry = new THREE.BufferGeometry().setFromPoints(linePoints.map(p => new THREE.Vector3(...p)))
+  sphere.position.x = obj.x
+  sphere.position.y = obj.y
+}
+
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
   equation: AmplitudeEq
@@ -82,10 +92,8 @@ export const startAnimation = (
     t: number
   ) => {
     if (t > 5) return
-    const {linePoints, obj} = equation(t)
-    line.geometry = new THREE.BufferGeometry().setFromPoints(linePoints.map(p => new THREE.Vector3(...p)))
-    sphere.position.x = obj.x
-    sphere.position.y = obj.y
+    setTime(t)
+    setItemPositions(t, equation)
     renderer.render(scene, camera)
 
     equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
@@ -104,4 +112,13 @@ export const stopAnimation = () => {
     cancelAnimationFrame(equationId)
     equationId = 0
   }
+}
+
+export const setFrame = (
+  t: number,
+  renderer: THREE.WebGLRenderer,
+  equation: AmplitudeEq
+) => {
+  setItemPositions(t, equation)
+  renderer.render(scene, camera)
 }

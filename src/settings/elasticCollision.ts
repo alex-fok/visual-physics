@@ -42,7 +42,6 @@ export default ():{ equationString:string, values: Value[], equation: () => Elas
     
     // The time when the collision happens
     const collisionTime = (x1_contactP - x2_contactP) / (v2_num - v1_num) > 0 ? (x1_contactP - x2_contactP) / (v2_num - v1_num) : Infinity
-    console.log(collisionTime)
     return (t:number) => ( 
       t <= collisionTime ? {
         x1: x1 + v1_num * t,

@@ -28,7 +28,11 @@ const onWindowResize = (renderer: THREE.WebGLRenderer, labelRenderer: CSS2DRende
 
 type StageProps = {
   eqName: EquationName,
-  equation: Equation | undefined
+  equation: Equation | undefined,
+  isPlayAnimation: boolean,
+  setIsPlayAnimation: (b: boolean) => void,
+  time: number,
+  setTime: (t: number) => void
 }
 
 const Stage: Component<StageProps> = (props) => {
@@ -71,14 +75,21 @@ const Stage: Component<StageProps> = (props) => {
     // Effect: Type
     createEffect(() => {
       window.addEventListener('resize', () => { onWindowResize(r, l) })
-      setCameraAndScene(...actions().init(renderer, labelRenderer))
+      setCameraAndScene(...actions().init(renderer, props.setTime, labelRenderer))
     })
   })
 
   createEffect(() => {
-    if (props.equation)
-      actions().start(renderer, props.equation, labelRenderer)
+    if (props.equation && props.isPlayAnimation)
+      actions().start(renderer, props.equation, () => { props.setIsPlayAnimation(false) }, labelRenderer)
   })
+
+  createEffect((prevTime) => {
+    if (props.time !== prevTime) {
+      actions().setFrame?.(props.time, renderer, props.equation, labelRenderer)
+      return props.time
+    }
+  }, props.time)
   return (
     <div id='renderingSpace' class='render-space'>
       <canvas ref={canvasRef}></canvas>

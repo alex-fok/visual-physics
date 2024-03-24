@@ -5,6 +5,8 @@ import type { InelasticCollisionEq } from '@/types/equations'
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
+let isAnimationCanceled = false;
+let setTime: (t: number) => void
 
 let controls : TrackballControls;
 
@@ -24,9 +26,10 @@ const controlAnimate = () => {
 
 }
 
-export const init = (renderer: THREE.WebGLRenderer, labelRenderer?: CSS2DRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
+export const init = (renderer: THREE.WebGLRenderer, setT: (t: number) => void, labelRenderer?: CSS2DRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
+  setTime = setT
 
   group1 = new THREE.Group();
   
@@ -91,25 +94,36 @@ export const init = (renderer: THREE.WebGLRenderer, labelRenderer?: CSS2DRendere
   return [scene, camera, assignRendererAnimation(renderer, scene, camera, labelRenderer)]
 }
 
+const setItemPositions = (t: number, equation: InelasticCollisionEq) => {
+  const {x1, x2} = equation(t)
+  object1.position.x = x1
+  object1Label.position.x = x1
+  object2.position.x = x2
+  object2Label.position.x = x2
+}
+
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
   equation: InelasticCollisionEq,
+  onEnd: () => void,
   labelRenderer?: CSS2DRenderer
 ) => {
   if (equationId) {
     cancelAnimationFrame(equationId)
     equationId = 0
   }
+  isAnimationCanceled = false
   const clock = new THREE.Clock()
   const moveObj = (
     equation: InelasticCollisionEq,
     t: number
   ) => {
-    if (t > 5) return
-    const {x1, x2} = equation(t)
-    object1.position.x = x1
-    object1Label.position.x = x1
-    object2.position.x = x2
+    if (t > 5) {
+      onEnd()
+      return
+    }
+    setTime(t)
+    setItemPositions(t, equation)
     renderer.render(scene, camera)
     labelRenderer?.render(scene, camera)
 
@@ -134,4 +148,15 @@ export const stopAnimation = () => {
     cancelAnimationFrame(equationId)
     equationId = 0
   }
+}
+
+export const setFrame = (
+  t: number,
+  renderer: THREE.WebGLRenderer,
+  equation: InelasticCollisionEq,
+  labelRenderer?: CSS2DRenderer
+  ) => {
+  setItemPositions(t, equation)
+  renderer.render(scene, camera)
+  labelRenderer?.render(scene, camera)
 }

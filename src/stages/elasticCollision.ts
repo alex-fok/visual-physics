@@ -11,9 +11,12 @@ let object2: THREE.Mesh
 let rendererId = 0
 let equationId = 0
 
-export const init = (renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
+let setTime: (t: number) => void
+
+export const init = (renderer: THREE.WebGLRenderer, setT: (t: number) => void): [THREE.Scene, THREE.PerspectiveCamera, () => void] => {
   camera = new THREE.PerspectiveCamera(75, undefined, 0.01, 1000)
   scene = new THREE.Scene()
+  setTime = setT
 
   object1 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
@@ -46,6 +49,12 @@ export const init = (renderer: THREE.WebGLRenderer): [THREE.Scene, THREE.Perspec
   return [scene, camera, assignRendererAnimation(renderer, scene, camera)]
 }
 
+const setItemPositions = (t: number, equation: ElasticCollisionEq) => {
+  const {x1, x2} = equation(t)
+  object1.position.x = x1
+  object2.position.x = x2
+}
+
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
   equation: ElasticCollisionEq
@@ -60,9 +69,8 @@ export const startAnimation = (
     t: number
   ) => {
     if (t > 5) return
-    const {x1, x2} = equation(t)
-    object1.position.x = x1
-    object2.position.x = x2
+    setTime(t)
+    setItemPositions(t, equation)
     renderer.render(scene, camera)
 
     equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
@@ -81,4 +89,13 @@ export const stopAnimation = () => {
     cancelAnimationFrame(equationId)
     equationId = 0
   }
+}
+
+export const setFrame = (
+  t: number,
+  renderer: THREE.WebGLRenderer,
+  equation: ElasticCollisionEq
+) => {
+  setItemPositions(t, equation)
+  renderer.render(scene, camera)
 }
