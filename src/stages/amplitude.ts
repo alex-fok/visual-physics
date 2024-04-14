@@ -80,7 +80,9 @@ const setItemPositions = (t: number, equation: AmplitudeEq) => {
 
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
-  equation: AmplitudeEq
+  equation: AmplitudeEq,
+  duration: number,
+  onEnd: () => void
 ) => {
   if (equationId) {
     cancelAnimationFrame(equationId)
@@ -91,12 +93,12 @@ export const startAnimation = (
     equation: AmplitudeEq,
     t: number
   ) => {
-    if (t > 5) return
     setTime(t)
     setItemPositions(t, equation)
     renderer.render(scene, camera)
-
-    equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
+    t < duration ?
+      equationId = requestAnimationFrame(() => moveObj(equation, Math.min(t + clock.getDelta(), duration))) :
+      onEnd?.()
   }
   // Start Animation  
   clock.start()

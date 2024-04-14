@@ -112,6 +112,7 @@ const setItemPositions = (t: number, equation: DisplacementEq) => {
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
   equation: DisplacementEq,
+  duration: number,
   onEnd: () => void,
   labelRenderer?: CSS2DRenderer
 ) => {
@@ -120,16 +121,13 @@ export const startAnimation = (
     equation: DisplacementEq,
     t: number
   ) => {
-    if (t > 5) {
-      onEnd()
-      return
-    }
     setTime(t)
     setItemPositions(t, equation)
     renderer.render(scene, camera)
     labelRenderer?.render(scene, camera)
-
-    equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
+    t < duration ?
+      equationId = requestAnimationFrame(() => moveObj(equation, Math.min(t + clock.getDelta(), duration))) :
+      onEnd()
   }
   // Start Animation  
   clock.start()

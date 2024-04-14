@@ -6,7 +6,13 @@ type StageSetup = (renderer: THREE.WebGLRenderer, setTime: (t: number) => void, 
   enableControl: () => void
 ]
 
-type StartAnimation = (renderer: THREE.WebGLRenderer, equation: any, onEnd: () => void, labelRenderer?: CSS2DRenderer) => void
+type StartAnimation = (
+  renderer: THREE.WebGLRenderer,
+  equation: any,
+  duration: number,
+  onEnd: () => void,
+  labelRenderer?: CSS2DRenderer
+) => void
 
 type StopAnimation = () => void
 

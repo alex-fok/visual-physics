@@ -32,7 +32,9 @@ type StageProps = {
   isPlayAnimation: boolean,
   setIsPlayAnimation: (b: boolean) => void,
   time: number,
-  setTime: (t: number) => void
+  setTime: (t: number) => void,
+  duration: number,
+  setDuration: (t: number) => void
 }
 
 const Stage: Component<StageProps> = (props) => {
@@ -80,8 +82,8 @@ const Stage: Component<StageProps> = (props) => {
   })
 
   createEffect(() => {
-    if (props.equation && props.isPlayAnimation)
-      actions().start(renderer, props.equation, () => { props.setIsPlayAnimation(false) }, labelRenderer)
+    if (props.equation && props.duration && props.isPlayAnimation)
+      actions().start(renderer, props.equation, props.duration, () => { props.setIsPlayAnimation(false) }, labelRenderer)
   })
 
   createEffect((prevTime) => {

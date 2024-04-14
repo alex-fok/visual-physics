@@ -1,0 +1,17 @@
+.controller {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.timer-text {
+    padding-left: .5rem;
+}
+
+.time-slider {
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    background-color: #2A2A2A;
+    width: 100%;
+}

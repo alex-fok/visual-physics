@@ -5,7 +5,6 @@ import type { InelasticCollisionEq } from '@/types/equations'
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
-let isAnimationCanceled = false;
 let setTime: (t: number) => void
 
 let controls : TrackballControls;
@@ -105,6 +104,7 @@ const setItemPositions = (t: number, equation: InelasticCollisionEq) => {
 export const startAnimation = (
   renderer: THREE.WebGLRenderer,
   equation: InelasticCollisionEq,
+  duration: number,
   onEnd: () => void,
   labelRenderer?: CSS2DRenderer
 ) => {
@@ -112,22 +112,18 @@ export const startAnimation = (
     cancelAnimationFrame(equationId)
     equationId = 0
   }
-  isAnimationCanceled = false
   const clock = new THREE.Clock()
   const moveObj = (
     equation: InelasticCollisionEq,
     t: number
   ) => {
-    if (t > 5) {
-      onEnd()
-      return
-    }
     setTime(t)
     setItemPositions(t, equation)
     renderer.render(scene, camera)
     labelRenderer?.render(scene, camera)
-
-    equationId = requestAnimationFrame(() => moveObj(equation, t + clock.getDelta()))
+    t < duration ?
+      equationId = requestAnimationFrame(() => moveObj(equation, Math.min(t + clock.getDelta(), duration))) :
+      onEnd()
   }
   // Start Animation  
   clock.start()
